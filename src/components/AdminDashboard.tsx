@@ -64,7 +64,7 @@ export default function AdminDashboard() {
     try {
       const [userRes, txnRes] = await Promise.all([
         fetch(`http://localhost:5000/user/${userId}`, { headers }),
-        fetch(`http://localhost:5000/user/transactions?id=${userId}`, { headers }), // Assuming you modify route to support `?id=`
+        fetch(`http://localhost:5000/user/transactions?id=${userId}`, { headers }), 
       ])
 
       if (!userRes.ok || !txnRes.ok) throw new Error("Failed to fetch user data")

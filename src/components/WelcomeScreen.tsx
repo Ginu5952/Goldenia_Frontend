@@ -27,9 +27,6 @@ export default function Welcome() {
             
             Admin 
           </Link>
-
-
-
         </div>
       </div>
     </div>

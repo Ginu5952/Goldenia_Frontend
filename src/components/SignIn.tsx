@@ -21,8 +21,6 @@ export default function SignIn() {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Check if the login is for an admin (via query parameter)
   const isAdminLogin = new URLSearchParams(location.search).get('role') === 'admin';
 
   const onSubmit = async (data: SignInData) => {
@@ -44,16 +42,14 @@ export default function SignIn() {
         alert("Login successful!");
 
         console.log('Login response:', result);
-
-        // Store JWT and role in localStorage for later use
         localStorage.setItem("token", result.access_token);
-        localStorage.setItem("role", result.role); // Store the user's role
+        localStorage.setItem("role", result.role); 
 
         // Navigate based on the role
         if (result.role === "admin") {
-          navigate("/admin");  // Redirect to Admin Dashboard
+          navigate("/admin");  
         } else {
-          navigate("/home");  // Redirect to User Home
+          navigate("/home");  
         }
       } else {
         alert(result.message || "Login failed");

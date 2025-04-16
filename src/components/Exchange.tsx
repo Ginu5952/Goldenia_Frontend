@@ -1,4 +1,4 @@
-// src/components/Exchange.tsx
+
 import { useState } from "react"
 
 export default function Exchange() {
@@ -7,7 +7,8 @@ export default function Exchange() {
   const [currencyTo, setCurrencyTo] = useState("EUR")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
- 
+  const [newBalance, setNewBalance] = useState<number | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
