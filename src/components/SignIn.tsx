@@ -1,15 +1,14 @@
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { useNavigate } from "react-router-dom";
-
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const signinSchema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password too short"),
-})
+});
 
-type SignInData = z.infer<typeof signinSchema>
+type SignInData = z.infer<typeof signinSchema>;
 
 export default function SignIn() {
   const {
@@ -18,9 +17,13 @@ export default function SignIn() {
     formState: { errors },
   } = useForm<SignInData>({
     resolver: zodResolver(signinSchema),
-  })
+  });
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if the login is for an admin (via query parameter)
+  const isAdminLogin = new URLSearchParams(location.search).get('role') === 'admin';
 
   const onSubmit = async (data: SignInData) => {
     try {
@@ -34,16 +37,24 @@ export default function SignIn() {
           password: data.password,
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
         alert("Login successful!");
-  
-        // Store JWT in localStorage for later use
+
+        console.log('Login response:', result);
+
+        // Store JWT and role in localStorage for later use
         localStorage.setItem("token", result.access_token);
-  
-        navigate("/");
+        localStorage.setItem("role", result.role); // Store the user's role
+
+        // Navigate based on the role
+        if (result.role === "admin") {
+          navigate("/admin");  // Redirect to Admin Dashboard
+        } else {
+          navigate("/home");  // Redirect to User Home
+        }
       } else {
         alert(result.message || "Login failed");
       }
@@ -52,12 +63,13 @@ export default function SignIn() {
       alert("Something went wrong during login");
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {isAdminLogin ? "Admin Sign In" : "Sign In"}
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <input
@@ -87,10 +99,10 @@ export default function SignIn() {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            Sign In
+            {isAdminLogin ? "Admin Sign In" : "Sign In"}
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }

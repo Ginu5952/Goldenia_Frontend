@@ -89,13 +89,7 @@ export default function Home() {
             <p className="text-sm text-gray-600">View all your past activity.</p>
           </Link>
 
-          <Link
-            to="/admin"
-            className="bg-white shadow rounded-xl p-6 hover:bg-blue-50 transition"
-          >
-            <h2 className="text-lg font-semibold text-red-600 mb-2">Admin Dashboard</h2>
-            <p className="text-sm text-gray-600">Admin-only controls and stats.</p>
-          </Link>
+         
         </div>
       </div>
     </div>
