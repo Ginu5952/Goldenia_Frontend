@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
+import api from '../api/axiosInstance'
 
 const signupSchema = z.object({
   username: z.string().min(2, "Name too short"),
@@ -19,32 +21,28 @@ export default function SignUp() {
   } = useForm<SignUpData>({
     resolver: zodResolver(signupSchema),
   })
+
   const navigate = useNavigate();
+
+ 
   const onSubmit = async (data: SignUpData) => {
     try {
-      const response = await fetch("http://localhost:5000/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await api.post("/auth/signup", 
+        {
           username: data.username,   
           email: data.email,
           password: data.password,
-        }),
-      });
+        });
   
-      const result = await response.json();
+      alert("Account created successfully!");
+      navigate("/signin");
   
-      if (response.ok) {
-        alert("Account created successfully!");
-        navigate("/signin");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data.message || "Signup failed");
       } else {
-        alert(result.message || "Signup failed");
+        alert("Something went wrong during signup");
       }
-    } catch (err) {
-      console.error("Signup error:", err);
-      alert("Something went wrong during signup");
     }
   };
   

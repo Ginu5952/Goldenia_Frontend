@@ -2,10 +2,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
+import api from '../api/axiosInstance';
 
 const signinSchema = z.object({
   email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password too short"),
+  password: z.string().min(6, "Invalid Password"),
 });
 
 type SignInData = z.infer<typeof signinSchema>;
@@ -25,38 +27,30 @@ export default function SignIn() {
 
   const onSubmit = async (data: SignInData) => {
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await api.post("/auth/login", 
+        {
           email: data.email,
           password: data.password,
-        }),
       });
 
-      const result = await response.json();
+      const result = response.data;  
 
-      if (response.ok) {
-        alert("Login successful!");
+      localStorage.setItem("token", result.access_token);
+      localStorage.setItem("role", result.role); 
 
-        console.log('Login response:', result);
-        localStorage.setItem("token", result.access_token);
-        localStorage.setItem("role", result.role); 
-
-        // Navigate based on the role
+       
         if (result.role === "admin") {
           navigate("/admin");  
         } else {
           navigate("/home");  
         }
-      } else {
-        alert(result.message || "Login failed");
-      }
+      alert("Login successful!");
     } catch (err) {
-      console.error("Login error:", err);
-      alert("Something went wrong during login");
+        if (axios.isAxiosError(err)) {
+          alert(err.response?.data.message || "Login failed");
+        } else {
+          alert("Something went wrong during login");
+        }
     }
   };
 

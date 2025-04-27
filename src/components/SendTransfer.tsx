@@ -1,9 +1,11 @@
-
+import axios from 'axios'
+import api from '../api/axiosInstance'
 import { useState } from "react"
 
 export default function SendTransfer() {
   const [amount, setAmount] = useState("")
   const [targetUserId, setTargetUserId] = useState("")
+  const [currency, setCurrency] = useState("USD");
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [balance, setBalance] = useState<number | null>(null);
@@ -13,33 +15,40 @@ export default function SendTransfer() {
     e.preventDefault()
     setLoading(true)
     try {
-      const response = await fetch("http://localhost:5000/user/transfer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
+      const response = await api.post(
+        "/user/transfer", 
+        {
           amount: parseFloat(amount),
           target_user_id: targetUserId,
-        }),
-      })
-      if (!response.ok) throw new Error("Failed to send transfer")
-      const data = await response.json()
+          currency: currency,
+         });
+
+      const data = response.data;  
+
+      if (response.status !== 200) {
+        setError(data.message || "Failed to send transfer");
+        return;
+      }
+      setBalance(data.balance); 
       alert(`Transfer successful! New balance: $${data.balance}`)
       setAmount("");  
       setTargetUserId("");
-      setBalance(data.balance); 
+      setCurrency("USD");
+     
     } catch (error) {
-      setError("Failed to send transfer")
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data.message || "Failed to send transfer");
+        } else {
+          setError("An unexpected error occurred");
+        }    
     } finally {
       setLoading(false)
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-32">
-    <div className="w-full max-w-xl h-[350px] p-6 bg-white shadow rounded-md">
+    <div className="w-full max-w-xl h-[450px] p-6 bg-white shadow rounded-md">
       <h2 className="text-2xl font-semibold mb-4 ">Send Transfer</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -69,6 +78,24 @@ export default function SendTransfer() {
             min="1"
           />
         </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600" htmlFor="currency">
+            Currency
+          </label>
+          <select
+            id="currency"
+            className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            required
+          >
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+
+
         {error && <div className="text-red-500 text-sm">{error}</div>}
         <button
           type="submit"

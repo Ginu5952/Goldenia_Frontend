@@ -1,5 +1,7 @@
 
 import { useState } from "react"
+import api from '../api/axiosInstance';
+import axios from 'axios';
 
 export default function TopUp() {
   const [amount, setAmount] = useState("")
@@ -9,22 +11,32 @@ export default function TopUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError(null);
+
     try {
-      const response = await fetch("http://localhost:5000/user/top-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ amount: parseFloat(amount) }),
-      })
-      if (!response.ok) throw new Error("Failed to top up")
-      const data = await response.json()
+      const response = await api.post(
+        '/user/top-up',
+        {
+          amount: parseFloat(amount),
+        });
+
+      const data = response.data; 
+
+      if (response.status !== 200) {
+        setError(data.message || "Failed to top up");
+        return;
+      } 
+      
       alert(`Successfully topped up! New balance: $${data.balance}`)
       setAmount("")        
       setError(null)  
     } catch (error) {
-      setError("Failed to top up")
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data.message || "Failed to top up");
+        } else {
+        
+          setError("An unexpected error occurred");
+        }
     } finally {
       setLoading(false)
     }
