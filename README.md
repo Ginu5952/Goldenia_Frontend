@@ -10,15 +10,24 @@ A React-based frontend for the Goldenia Wallet app. It allows users to register,
 - React Router for routing
 - JWT Authentication
 
+## Prerequisites
+Make sure you have the following installed:
+
+- [Docker](https://www.docker.com/get-started) (for running containers)
+- [Docker Compose](https://docs.docker.com/compose/install/) (to manage multi-container apps)
+
+
+
 ## 📦 Setup Instructions
 
 ### 1. Clone the Repository
 
 Clone the repository to your local machine:
+open terminal and run following commands
 
 ```bash
-git clone https://github.com/Ginu5952/Goldenia_Frontend.git
-cd Goldenia_Frontend
+git clone https://github.com/Ginu5952/goldenia-wallet-web.git
+cd goldenia-wallet-web
 code .
 ```
 ### 2. Install Dependencies
@@ -27,21 +36,25 @@ code .
 npm install
 ```
 
-## Start the Development Server
-Start the development server with:
+## Run the Application
+Once you’ve installed the dependencies, you can start the frontend development server using:
 
 ```bash
 npm run dev
 ````
 `This will run the frontend on http://localhost:5173. `
 
-## 🧪 Testing the App
-Make sure the Backend server is running at http://localhost:5000 (or update the API base URL if different).
+## Build and Run the Containers:
+Run the following command to build and start both frontend and backend services using Docker Compose:
 
-Frontend will automatically make requests to the backend endpoints using this base URL.
+```
+docker-compose up --build
+```
+`Note You have to run both frontend and backend containers for the app to function correctly. The frontend will communicate with the backend API, and both need to be running simultaneously.
 
-## ✅ Requirements
-Node.js v16 or higher
+Ensure that the backend is up and running before starting the frontend so the frontend can make API requests to the backend.
+`
 
-npm (Node package manager)
-
+Access the Application
+Once everything is up and running, you can access the frontend application at:
+Frontend (UI): http://localhost:5173/
