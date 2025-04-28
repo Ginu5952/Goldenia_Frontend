@@ -1,6 +1,6 @@
 
 import { useState } from "react"
-import api from '../api/axiosInstance';
+import api from '../../api/axiosInstance';
 import axios from 'axios';
 
 export default function TopUp() {

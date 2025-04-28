@@ -2,12 +2,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Welcome from './components/WelcomeScreen'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
-import TopUp from './components/TopUp'
-import SendTransfer from './components/SendTransfer'
-import Exchange from './components/Exchange'
-import TransactionHistory from './components/TransactionHistory'
-import AdminDashboard from './components/AdminDashboard'
-import Home from './components/Home'
+import TopUp from './components/User/TopUp'
+import SendTransfer from './components/User/SendTransfer'
+import Exchange from './components/User/Exchange'
+import TransactionHistory from './components/User/TransactionHistory'
+import AdminDashboard from './components/Admin/AdminDashboard'
+import AdminTransactions from './components/Admin/AdminTransactions'
+import Home from './components/User/Home'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/exchange" element={<Exchange />} />
         <Route path="/transactions" element={<TransactionHistory />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/transactions/:userId" element={<AdminTransactions />} />
       </Routes>
     </Router>
   )

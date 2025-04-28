@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/axiosInstance";
+import api from '../../api/axiosInstance';
 
 interface Transaction {
   id: number;
