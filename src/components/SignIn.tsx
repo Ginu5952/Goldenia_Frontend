@@ -6,8 +6,10 @@ import axios from 'axios';
 import api from '../api/axiosInstance';
 
 const signinSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Invalid Password"),
+  email: z.string().email("Invalid email")
+                    .nonempty("Email cannot be empty"),
+  password: z.string().min(6, "Invalid Password")
+                      .nonempty("Password cannot be empty"),
 });
 
 type SignInData = z.infer<typeof signinSchema>;
