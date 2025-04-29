@@ -6,9 +6,12 @@ import axios from 'axios'
 import api from '../api/axiosInstance'
 
 const signupSchema = z.object({
-  username: z.string().min(2, "Name too short"),
-  email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password too short"),
+  username: z.string().nonempty("Name cannot be empty")
+                      .min(2, "Name must be at least 2 characters long"),
+  email: z.string().email("Invalid email")
+                    .nonempty("Email cannot be empty"),
+  password: z.string().min(6, "Password too short")
+                      .nonempty("Password cannot be empty"),
 })
 
 type SignUpData = z.infer<typeof signupSchema>
